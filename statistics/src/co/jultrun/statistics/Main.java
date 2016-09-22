@@ -2,38 +2,35 @@ package co.jultrun.statistics;
 
 import java.awt.EventQueue;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Vector;
 
 import javax.swing.table.DefaultTableModel;
+
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Collections;
+
+import co.jultrun.statistics.storage.Storage;
 
 public class Main {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				Object[] columnNames = new String[] { "x", "fi", "Fi-", "Fi+", "hi", "Hi-", "Hi+" };
+
 				DefaultTableModel dtm = new DefaultTableModel(columnNames, 0);
 				if (true) {
-					dtm = new DefaultTableModel(columnNames, 0);
 					try {
-						BufferedReader br = new BufferedReader(new FileReader("d.stad"));
-						String line;
-						while ((line = br.readLine()) != null) {
-							Vector<Float> model = new Vector<>();
-							model.addAll(readLine(line.split(",")));
-
-							dtm.addRow(model);
-						}
-						br.close();
-
-					} catch (IOException | NumberFormatException e) {
-						dtm = new DefaultTableModel(new String[] { "x", "fi", "Fi-", "Fi+", "hi", "Hi-", "Hi+" }, 6);
-						;
-
+						dtm.setDataVector(Storage.load(new FileReader("d.stad")),
+								new Vector<>(Arrays.asList(columnNames)));
+					} catch (NumberFormatException | IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-
 				}
 				try {
 					Gui frame = new Gui(dtm);
